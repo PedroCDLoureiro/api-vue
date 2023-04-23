@@ -1,30 +1,59 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+    <div v-if="auth && notIsLoginPage" class="div-home">
+        <MenuLateral />
+        <DashboardView />
+    </div>
+    <div v-else class="page-login">
+      <LoginView />
+    </div>
 </template>
 
+<script>
+    import MenuLateral from './components/MenuLateral.vue'
+    import DashboardView from './views/DashboardView.vue'
+    import LoginView from './views/LoginView.vue'
+
+    export default {
+        name: 'App',
+        components: {
+            MenuLateral,
+            DashboardView,
+            LoginView
+        },
+        computed: {
+          auth(){
+            if(localStorage.getItem('auth') == 'abcde12345'){
+              return true
+            }
+            else{
+              return false
+            }
+          },
+          notIsLoginPage(){
+            return this.$route.name !== "login"
+          }
+        }
+    }
+</script>
+
 <style lang="scss">
+body{
+  margin: 0;
+}
+*{
+  font-family: "Open sans";
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 }
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+a {
+  text-decoration: none;
+}
+.div-home{
+  display: flex;
+  height: 100vh;
 }
 </style>

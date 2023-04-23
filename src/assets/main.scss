@@ -1,0 +1,44 @@
+:root{
+    --primary-color: #0067A5;
+    --sucess-color: #53A653;
+    --error-color: #9b0707;
+    --font-color: #626262;
+    --bg-color: #F5F8F9;
+}
+.primary-button{
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border: none;
+    color: #FFF;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.secondary-button{
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    color: #949494;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.delete-button{
+    background-color: #b81515;
+    border: 1px solid #b81515;
+    color: #fff;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(0, 0, 0, 0.25);
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(0, 0, 0, 0.25);
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgba(0, 0, 0, 0.25);
+  }

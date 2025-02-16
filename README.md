@@ -1,5 +1,10 @@
 # az_teste
 
+Dados de login:
+
+Usuário: admin
+Senha: admin
+
 ## Project setup
 ```
 npm install

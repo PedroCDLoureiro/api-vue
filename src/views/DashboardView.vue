@@ -133,7 +133,7 @@
         <!-- Fim Notificação -->
         <!-- Rodapé -->
         <div class="rodape-dashboard">
-            <span>Copyright © 2023</span>
+            <span>Copyright © {{ new Date().getFullYear() }}</span>
             <span>v 1.0.0</span>
         </div>
         <!-- Fim Rodapé -->

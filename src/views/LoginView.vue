@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="rodape-login">
-            <span>Copyright © 2023</span>
+            <span>Copyright © {{ new Date().getFullYear() }}</span>
             <span>v 1.0.0</span>
         </div>
         <!-- Notificação -->

@@ -1,9 +1,6 @@
 <template>
     <div class="menu-lateral" v-bind:class="{ active: recolherMenu }">
         <div class="topo">
-            <div class="logo">
-                <LogoBranca />
-            </div>            
             <router-link to="#">
                 <div class="menu">
                     <IconeCandidatos />
@@ -25,13 +22,11 @@
 </template>
 
 <script>
-    import LogoBranca from '@/components/icons/LogoBranca.vue'
     import IconeCandidatos from '@/components/icons/IconeCandidatos.vue'
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     export default {
         name: 'MenuLateral',
         components: {
-            LogoBranca,
             IconeCandidatos,
             FontAwesomeIcon
         },
@@ -54,11 +49,14 @@
         width: 15vw;
         transition: all ease .3s;
         .topo{
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            .logo{
-                display: flex;
-                justify-content: center;
-                padding: 55px 0;
+            height: calc(100% - 50px);
+            a {
+                width: 100%;
+                text-decoration: none;
             }
             .menu{
                 position: relative;
@@ -97,6 +95,8 @@
             color: rgba(255, 255, 255, 0.2);
             padding: 15px 10px;
             justify-content: center;
+            height: 50px;
+            box-sizing: border-box;
             cursor: pointer;
             transition: all ease .3s;
             svg{
@@ -110,9 +110,6 @@
         }
         &.active{
             width: 5vh;
-            .logo{
-                padding: 5px;
-            }
             .menu{
                 overflow: hidden;
                 opacity: 0;
@@ -128,11 +125,6 @@
         }
     }
     @media (max-width: 768px){
-        .logo{
-            svg{
-                width: 75%;
-            }
-        }
         .menu{
             span{
                 display: none;

@@ -1,9 +1,8 @@
 <template>
     <div class="wrapper">
         <div class="login">
-            <div class="info-az">
-                <LogoCinza />
-                <span>Tecnologia em Gestão</span>
+            <div class="info">
+                <span>Cadastro de Candidatos</span>
             </div>
             <div class="div-login">
                 <form>
@@ -43,13 +42,11 @@
 </template>
 
 <script>
-    import LogoCinza from '@/components/icons/LogoCinza.vue'
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
         name: 'LoginView',
         components: {
-            LogoCinza,
             FontAwesomeIcon
         },
         data : () => ({
@@ -88,16 +85,15 @@
         justify-content: center;
         align-items: center;
         height: calc(100% - 50px);
-        .info-az{
+        .info{
             display: flex;
             align-items: center;
             margin-bottom: 30px;
             padding: 0 15px;
             span{
-                color: #8E8E8E;
+                color: var(--primary-color);
                 font-size: 22px;
                 font-weight: bold;
-                margin-left: 15px;
             }
         }
         .div-login{

@@ -8,7 +8,7 @@
                     <h2> » Listagem dos candidatos </h2>
                 </div>
                 <div class="user">
-                    Karen
+                    Admin
                     <FontAwesomeIcon class="b-down" icon="chevron-down" @click="menuLogout = !menuLogout"/>
                     <IconeUsuario />
                     <div v-if="menuLogout" class="logout" @click="logout">
@@ -29,25 +29,58 @@
                     <tr>
                         <th>#</th>
                         <th>Nome</th>
-                        <th>E-mail</th>
+                        <th>Vaga</th>
                         <th>Ações</th>
                     </tr>
-                    <tr v-for="candidato of candidatos" :key="candidato.id">
+                    <tr v-for="candidato of candidatosPaginados" :key="candidato.id">
                         <td>{{ candidato.id }}</td>
-                        <td><img :src="candidato.avatar">{{ candidato.first_name }} {{ candidato.last_name }}</td>
-                        <td>{{ candidato.email }}</td>
+                        <td>{{ candidato.first_name }} {{ candidato.last_name }}</td>
+                        <td>{{ candidato.vaga }}</td>
                         <td>
                             <FontAwesomeIcon class="b-edit" icon="pen-to-square" @click="getCandidato(candidato.id)"/>
                             <FontAwesomeIcon class="b-delete" icon="trash-can" @click="form.id = candidato.id, showModalExclusao = true"/>
                         </td>
                     </tr>
                 </table>
-                <nav class="pagination" role="navigation" aria-label="pagination">
-                    <span>Página {{ current_page }} de {{ pages != '' ? pages : '1'}}</span>
+                <nav
+                    class="pagination"
+                    role="navigation"
+                    aria-label="Paginação"
+                >
+                    <span>
+                        Página {{ current_page }} de {{ totalPages || 1 }}
+                    </span>
+
                     <ul class="pagination-list">
-                        <li v-for="(page, index) in pages" :key="index">
-                            <a class="pagination-link" @click="navigate(page)"
-                                :class="{ 'is-current': page === current_page }">{{ page }}</a>
+                        <li>
+                            <button
+                                @click="navigate(current_page - 1)"
+                                :disabled="current_page === 1"
+                            >
+                                ‹
+                            </button>
+                        </li>
+
+                        <li
+                            v-for="page in pages"
+                            :key="page"
+                        >
+                            <button
+                                class="pagination-link"
+                                @click="navigate(page)"
+                                :class="{ 'is-current': page === current_page }"
+                            >
+                                {{ page }}
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                @click="navigate(current_page + 1)"
+                                :disabled="current_page === totalPages"
+                            >
+                                ›
+                            </button>
                         </li>
                     </ul>
                 </nav>
@@ -160,15 +193,36 @@ export default {
             showModalExclusao: false,
             Notificacao: false,
             MensagemNotificacao: "",
-            data: [],
+
             candidatos: [],
-            pages: [],
+
             form: {
                 id: "",
                 nome: "",
                 vaga: ""
             },
+
             current_page: 1,
+            per_page: 5,
+        }
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.candidatos.length / this.per_page)
+        },
+
+        candidatosPaginados() {
+            const inicio = (this.current_page - 1) * this.per_page
+            const fim = inicio + this.per_page
+
+            return this.candidatos.slice(inicio, fim)
+        },
+
+        pages() {
+            return Array.from(
+                { length: this.totalPages },
+                (_, index) => index + 1
+            )
         }
     },
     methods:{
@@ -181,16 +235,39 @@ export default {
                 this.form.vaga = ''
             }
         },
-        adicionarCandidato(){
-            let cand_id = this.candidatos != '' ? this.candidatos[this.candidatos.length - 1].id : 0
-            let dados = {
-                id: cand_id + 1,
-                first_name: this.form.nome,
-                vaga: this.form.vaga,
+        salvarCandidatos() {
+            sessionStorage.setItem(
+                'candidatos',
+                JSON.stringify(this.candidatos)
+            )
+        },
+        carregarCandidatos() {
+            const candidatos = sessionStorage.getItem('candidatos')
+
+            if (candidatos) {
+                this.candidatos = JSON.parse(candidatos)
+                return true
             }
-            this.data.total ++
+
+            return false
+        },
+        adicionarCandidato() {
+            const ultimoId = this.candidatos.length
+                ? Math.max(...this.candidatos.map(candidato => candidato.id))
+                : 0
+
+            const dados = {
+                id: ultimoId + 1,
+                first_name: this.form.nome.trim(),
+                last_name: '',
+                vaga: this.form.vaga.trim(),
+            }
+
             this.candidatos.push(dados)
-            this.showModal= false
+
+            this.salvarCandidatos()
+
+            this.showModal = false
             this.MensagemNotificacao = "Cadastro realizado com sucesso!"
             this.Notificacao = true
         },
@@ -205,20 +282,34 @@ export default {
                 this.showModal = true
             }
         },
-        editarCandidato(candidato_id){
-            let index_candidato = this.candidatos.findIndex((user) => user.id === candidato_id);
-            this.candidatos[index_candidato].first_name = ""
-            this.candidatos[index_candidato].last_name = ""
-            this.candidatos[index_candidato].first_name = this.form.nome
-            this.candidatos[index_candidato].vaga = this.form.vaga
+        editarCandidato(candidato_id) {
+            const candidato = this.candidatos.find(
+                candidato => candidato.id === candidato_id
+            )
+
+            if (!candidato) return
+
+            candidato.first_name = this.form.nome.trim()
+            candidato.last_name = ''
+            candidato.vaga = this.form.vaga.trim()
+
+            this.salvarCandidatos()
+
             this.showModal = false
             this.MensagemNotificacao = "Edição realizada com sucesso!"
             this.Notificacao = true
         },
-        deletarCandidato(candidato_id){
-            let index_candidato = this.candidatos.findIndex((user) => user.id === candidato_id);
-            this.data.total--
-            this.candidatos.splice(index_candidato, 1)
+        deletarCandidato(candidato_id) {
+            this.candidatos = this.candidatos.filter(
+                candidato => candidato.id !== candidato_id
+            )
+
+            if (this.current_page > this.totalPages) {
+                this.current_page = Math.max(this.totalPages, 1)
+            }
+
+            this.salvarCandidatos()
+
             this.showModalExclusao = false
             this.MensagemNotificacao = "Exclusão realizada com sucesso!"
             this.Notificacao = true
@@ -247,17 +338,23 @@ export default {
             this.$router.push('login')
         }
     },
-    mounted(){
+    mounted() {
+        if (this.carregarCandidatos()) {
+            return
+        }
         axios
-        .get('https://reqres.in/api/users')
-        .then(response => {
-            this.data = response.data;
-            this.candidatos = response.data.data;
-            this.pagination();
-        })
-        .catch(error => {
-            console.log(error);
-        })
+            .get('https://reqres.in/api/users?per_page=10')
+            .then(response => {
+                this.candidatos = response.data.data.map(candidato => ({
+                    ...candidato,
+                    vaga: candidato.vaga || 'Desenvolvedor'
+                }))
+
+                this.salvarCandidatos()
+            })
+            .catch(error => {
+                console.error('Erro ao carregar candidatos:', error)
+            })
     }
 }
 </script>
@@ -332,12 +429,12 @@ export default {
         }
     }
     .container{
-        padding: 25px;
+        padding: 0 25px;
         .content{
             background-color: #fff;
             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
             border-radius: 6px;
-            padding: 15px;
+            padding: 5px 15px;
             .table-list{
                 width: 100%;
                 border-collapse: collapse;
@@ -508,9 +605,10 @@ export default {
                 align-items: center;
                 list-style: none;
                 margin: 0 5px;
-                cursor: pointer;
-                a{
+                button{
                     padding: 5px 10px;
+                    border: none;
+                    cursor: pointer;
                     transition: all ease .3s;
                     &.is-current{
                         background-color: var(--primary-color);
@@ -563,7 +661,7 @@ export default {
                         }
                     }
                     .pagination{
-                        a{
+                        button{
                             padding: 2px 6px;
                         }
                     }

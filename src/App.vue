@@ -41,7 +41,7 @@ body{
   margin: 0;
 }
 *{
-  font-family: "Open sans";
+  font-family: "Poppins", sans-serif;
 }
 #app {
   -webkit-font-smoothing: antialiased;

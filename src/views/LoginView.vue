@@ -13,14 +13,14 @@
                         name="usuario" 
                         id="usuario" 
                         v-model="form.usuario" 
-                        placeholder="Informe usuário">
+                        placeholder="Informe usuário (admin)">
                     <label for="">Senha</label>
                     <input 
                         type="password" 
                         name="senha" 
                         id="senha" 
                         v-model="form.senha" 
-                        placeholder="Informe senha">
+                        placeholder="Informe senha (admin)">
                     <div class="botao">
                         <button class="primary-button" @click="submit">Entrar</button>
                     </div>
